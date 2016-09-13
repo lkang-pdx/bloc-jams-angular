@@ -24,8 +24,7 @@
          
           var setSong = function(song) {
               if (currentBuzzObject) {
-                   currentBuzzObject.stop();
-                   SongPlayer.currentSong.playing = null;
+                   stopSong(SongPlayer.currentSong);
               }
 
               currentBuzzObject = new buzz.sound(song.audioUrl, {
@@ -34,6 +33,16 @@
               });
 
               SongPlayer.currentSong = song;
+          };
+         
+         /**
+         * @function stopSong
+         * @desc Stop a song 
+         * @param {Object} song
+         **/
+          var stopSong = function(song) {
+              currentBuzzObject.stop();
+              song.playing = null;
           };
          
          /**
@@ -105,8 +114,27 @@
              currentSongIndex--;
               
              if (currentSongIndex < 0) {
-                 currentBuzzObject.stop();
-                 SongPlayer.currentSong.playing = null;
+                 stopSong(SongPlayer.currentSong);
+             } else {
+                 var song = currentAlbum.songs[currentSongIndex];
+                 setSong(song);
+                 playSong(song);
+             }
+          };
+         
+                  /**
+         * @function next
+         * @desc Stop currently playing song and play next song
+         * @param {Object} song
+         */
+          SongPlayer.next = function() {
+             var currentSongIndex = getSongIndex(SongPlayer.currentSong);
+             currentSongIndex++;
+              
+             var lastSongIndex = currentAlbum.songs.length - 1;
+              
+             if (currentSongIndex > lastSongIndex) {
+                 stopSong(SongPlayer.currentSong);
              } else {
                  var song = currentAlbum.songs[currentSongIndex];
                  setSong(song);
@@ -119,5 +147,5 @@
  
      angular
          .module('blocJams')
-         .factory('SongPlayer', SongPlayer);
+         .factory('SongPlayer', ['Fixtures', SongPlayer]);
  })();
