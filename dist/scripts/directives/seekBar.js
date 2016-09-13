@@ -73,7 +73,7 @@
                  };
              }
          };
-     }
+     };
  
      angular
          .module('blocJams')
